@@ -1,0 +1,13 @@
+{
+  "name": "@bto-ui/products-store",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "serve": "sirv dist --port 5001",
+    "build": "qoi build --dts --emptyOutDir --preset vue --external @vue/reactivity,koala-store,carts-store"
+  },
+  "keywords": [],
+  "author": "Arjay Elbore <aelbore.sg@gmail.com>",
+  "license": "MIT"
+}

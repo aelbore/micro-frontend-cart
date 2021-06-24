@@ -1,0 +1,13 @@
+{
+  "name": "carts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "serve": "sirv dist --port 5001",
+    "build": "qoi build --emptyOutDir --preset vue --external carts-store"
+  },
+  "keywords": [],
+  "author": "Arjay Elbore <aelbore.sg@gmail.com>",
+  "license": "MIT"
+}

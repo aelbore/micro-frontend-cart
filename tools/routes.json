@@ -1,0 +1,22 @@
+{
+  "routes": [
+    {
+      "path": "/",
+      "component": "/products.js"
+    },
+    {
+      "path": "/carts",
+      "component": "/carts.js"
+    }
+  ],
+  "stores": [
+    { 
+      "id": "Products", 
+      "module": "/products-store.js" 
+    },
+    { 
+      "id": "Carts", 
+      "module": "/carts-store.js" 
+    }
+  ]
+}

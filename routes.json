@@ -1,0 +1,22 @@
+{
+  "routes": [
+    {
+      "path": "/",
+      "component": "../packages/products/src/main"
+    },
+    {
+      "path": "/carts",
+      "component": "../packages/carts/src/main"
+    }
+  ],
+  "stores": [
+    { 
+      "id": "Products", 
+      "module": "../stores/products/src/products" 
+    },
+    { 
+      "id": "Carts", 
+      "module": "../stores/carts/src/carts" 
+    }
+  ]
+}

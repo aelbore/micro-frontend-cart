@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <base href="/" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vue Micro-frontend</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: sans-serif;
+    }
+  </style>
+  <script defer src="/node_modules/es-module-shims/dist/es-module-shims.min.js"></script>
+  <script type="importmap-shim">
+    {
+      "imports": {
+        "vue": "/node_modules/vue/dist/vue.esm-browser.js",
+        "vue-router": "/node_modules/vue-router/dist/vue-router.esm-browser.js",
+        "vuex": "/node_modules/vuex/dist/vuex.esm-browser.prod.js",
+        "@vue/devtools-api": "/node_modules/@vue/devtools-api/lib/esm/index.js",
+        "/node_modules/@vue/devtools-api/lib/esm/env": "/node_modules/@vue/devtools-api/lib/esm/env.js",
+        "/node_modules/@vue/devtools-api/lib/esm/const": "/node_modules/@vue/devtools-api/lib/esm/const.js",
+        "/node_modules/@vue/devtools-api/lib/esm/api": "/node_modules/@vue/devtools-api/lib/esm/api/api.js"
+      }
+    }
+  </script>
+</head>
+<body>
+  <div id="app"></div>
+  <script type="module-shim" src="./micro-frontend-cart.js"></script>
+</body>
+</html>

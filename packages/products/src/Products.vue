@@ -9,8 +9,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue'
-import productStore from 'products-store'
+import { defineComponent } from 'vue'
+import { useStore, Product as IProduct } from 'products-store'
 
 import Product from './Product.vue'
 
@@ -20,20 +20,11 @@ export default defineComponent({
     Product
   },
   setup() {
-    const { subscribe, getState, dispatch } = productStore
-    const products = ref()
+    const { getter, dispatch } = useStore()
+    const products = getter((state) => state.products)
 
-    subscribe(() => {
-      const state = getState()
-      products.value = state.products
-    })
-
-    const addToCart = (product) => 
+    const addToCart = (product: IProduct) => 
       dispatch({ type: 'addToCart', payload: product })
-
-    onMounted(() => {
-      dispatch({ type: 'onInit' })
-    })
 
     return { products, addToCart }
   }

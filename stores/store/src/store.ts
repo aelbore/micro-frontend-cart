@@ -1,55 +1,33 @@
-import { ref } from '@vue/reactivity'
-import { Action, CallbackFn, ComputedGetter, Reducer, Store, StoreOptions } from './types'
+import { AnyAction, Store } from 'redux'
+import { computed, ref } from 'vue'
 
-const State = new Map<string, {}>()
-const Stores = new Map<string, Store<{}>>()
+import { ComputedGetter, KoalaStore } from './types'
 
-const generateId = () =>
-  Math.floor((1 + Math.random()) * 0x10000)
-    .toString(16)
-    .substring(1)
 
-export function createStore<T>(options: StoreOptions<T>) {
-  const { key, state, reducer } = options
-  return Stores.set(key, defineStore<T>(reducer, state)).get(key) as Store<T>
-}
-
-export function useStore<T>(key: string) {
-  return Stores.get(key) as Store<T>
-}
-
-export function defineStore<T>(reducer: Reducer<T>, initialState: T) {
-  const key = generateId()
-  const listeners: Array<CallbackFn<T>> = []
+export function koala<S>(store: Store<S, AnyAction>) {
   
-  State.set(key, initialState)
-
-  const getState = () => State.get(key) as T
-
-  const dispatch = async (action?: Action) => {
-    const state = await reducer(getState(), action)
-    State.set(key, state)
-
-    listeners.slice().forEach((listener: CallbackFn<T>) => listener(getState()))
+  function dispatch(action: AnyAction) {
+    store.dispatch(action)
   }
 
-  const subscribe = (listener: CallbackFn<T>) => {
-    listeners.push(listener)
-    return () => listeners.filter(l => l !== listener)
+  function watch<T>(fn: ComputedGetter<S, T>) {
+    getter(fn)
   }
 
-  function useState<S>(getter: ComputedGetter<T, S>){
-    const result = ref<S>()
+  function getter<T>(fn: ComputedGetter<S, T>) {
+    const result = ref<T>()
 
-    subscribe((state: T) => {
-      result.value = getter(state)
+    store.subscribe(() => {
+      const state = store.getState()
+      result.value = fn(state as S)
     })
-    dispatch()
 
-    return result
+    store.dispatch({ type: 'onInit' })
+  
+    return computed(() => result.value)
   }
 
-  const result: Store<T> = { getState, subscribe, dispatch, useState }
+  const result: KoalaStore<S> = { dispatch, getter, watch }
 
   return result
 }

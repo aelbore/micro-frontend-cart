@@ -1,4 +1,5 @@
-import type { Ref } from '@vue/reactivity'
+import { AnyAction } from 'redux'
+import type { ComputedRef, Ref } from 'vue'
 
 export interface Action {
   type: symbol | string
@@ -28,4 +29,10 @@ export interface StoreOptions<T> {
   key: string
   state?: T
   reducer?: Reducer<T>
+}
+
+export interface KoalaStore<S> {
+  dispatch(action: AnyAction): void
+  watch<T>(fn: ComputedGetter<S, T>): void
+  getter<T>(fn: ComputedGetter<S, T>): ComputedRef<T>
 }

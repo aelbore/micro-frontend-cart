@@ -1,5 +1,6 @@
 import { AnyAction, createStore, Reducer } from 'redux'
-import { useStore } from 'carts-store'
+import * as cart from 'carts-store'
+import { koala } from 'koala-store'
 
 export type Action = AnyAction & { payload?: any }
 
@@ -13,15 +14,11 @@ export interface ProductState {
   products?: Product[]
 }
 
-export interface ComputedGetter<S, T> {
-  (state: S): T
-}
-
 const reducer: Reducer<ProductState> = (
   state: ProductState, 
   action: Action
 ) => {
-  const { dispatch } = useStore()
+  const { dispatch } = cart.useStore()
 
   switch (action.type) {
     case 'addToCart': 
@@ -43,5 +40,9 @@ const store = createStore(reducer, {
     { id: 'p4', title: 'Half-dried plant', price: 2.99 }
   ]
 })
+
+export function useStore() {
+  return koala<ProductState>(store)
+}
 
 export default store

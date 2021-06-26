@@ -1,19 +1,9 @@
-import { koala } from 'koala-store'
-import { createStore, Reducer, AnyAction, Store, applyMiddleware } from 'redux'
 import type { RouteRecordRaw } from 'vue-router'
 
-export type Action = AnyAction & { payload?: any }
+import { addToStore, Action } from 'koala-store'
+import { createStore, Reducer, AnyAction, Store, applyMiddleware } from 'redux'
 
-export interface Menu {
-  text?: string
-  link?: string
-}
-
-export interface BootstrapState {
-  routes?: RouteRecordRaw[], 
-  menus?: Menu[]
-  completed?: boolean
-}
+import { BootstrapState, Stores } from './types'
 
 const reducer: Reducer<BootstrapState> = (
   state: BootstrapState, 
@@ -25,9 +15,13 @@ const reducer: Reducer<BootstrapState> = (
 
       state.routes = model.routes
       state.completed = model.completed
+      state.stores = model.stores
 
+      state.stores.forEach(({ key, store }) => {
+        addToStore(key, store)
+      })
+      
       return state      
-    
     default:
       return state
   }
@@ -41,8 +35,15 @@ const service = (store: Store<BootstrapState, AnyAction>) =>
 
     switch (action.type) {
       case 'GET_CONFIG': 
+        const stores: Stores[] = []
+
         const response = await fetch('/routes.json')
         const packages = await response.json()
+
+        await Promise.all(packages.stores.map(async moduleStore => {
+          const store = await import(/* @vite-ignore */  moduleStore.module).then(c => c.default)
+          stores.push({ key: moduleStore.id, store })
+        }))
 
         const routes: RouteRecordRaw[] = packages?.routes?.map(pkg => {
           const route: RouteRecordRaw = {
@@ -54,7 +55,13 @@ const service = (store: Store<BootstrapState, AnyAction>) =>
   
         store.dispatch({ 
           type: 'bootstrap', 
-          payload: { routes, completed: true }
+          payload: { 
+            routes, 
+            stores,
+            completed: (
+              packages.stores?.length === stores.length
+            )
+          }
         })
     }
 }
@@ -65,9 +72,5 @@ const initialState: BootstrapState = {
 } 
 
 const store = createStore(reducer, initialState, applyMiddleware(service))
-
-export function useStore() {
-  return koala<BootstrapState>(store)
-}
 
 export default store

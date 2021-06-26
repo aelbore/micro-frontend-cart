@@ -3,6 +3,7 @@ import { computed, ref } from 'vue'
 
 import { ComputedGetter, KoalaStore } from './types'
 
+const stores = new Map<string, Store<{}, AnyAction>>()
 
 export function koala<S>(store: Store<S, AnyAction>) {
   
@@ -27,7 +28,16 @@ export function koala<S>(store: Store<S, AnyAction>) {
     return computed(() => result.value)
   }
 
-  const result: KoalaStore<S> = { dispatch, getter, watch }
+  const result: KoalaStore<S> = { store, dispatch, getter, watch }
 
   return result
 }
+
+export function useStore<S>(key: string) {
+  const store = stores.get(key) as Store<S, AnyAction>
+  return koala<S>(store)
+}
+
+export function addToStore<S>(key: string, store: Store<S, AnyAction>) {
+  return stores.set(key, store).get(key) as Store<S, AnyAction> 
+} 

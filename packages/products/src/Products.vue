@@ -10,7 +10,8 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { useStore, Product as IProduct } from 'products-store'
+import { useStore } from 'koala-store'
+import type { Product as IProduct, ProductState } from 'products-store'
 
 import Product from './Product.vue'
 
@@ -20,7 +21,7 @@ export default defineComponent({
     Product
   },
   setup() {
-    const { getter, dispatch } = useStore()
+    const { getter, dispatch } = useStore<ProductState>('Products')
     const products = getter((state) => state.products)
 
     const addToCart = (product: IProduct) => 

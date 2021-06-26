@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "serve": "sirv dist --port 5001",
-    "build": "qoi build --emptyOutDir --preset vue --external products-store"
+    "build": "qoi build --emptyOutDir --preset vue --external products-store,koala-store"
   },
   "keywords": [],
   "author": "Arjay Elbore <aelbore.sg@gmail.com>",

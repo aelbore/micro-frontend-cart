@@ -3,10 +3,11 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 
-import { useStore } from 'bootstrap'
+import { koala } from 'koala-store'
+import bootstrap, { BootstrapState } from 'bootstrap'
 
 (async function () {
-  const { watch, dispatch } = useStore()
+  const { watch, dispatch } = koala<BootstrapState>(bootstrap)
 
   dispatch({ type: 'GET_CONFIG' })
   watch(state => {

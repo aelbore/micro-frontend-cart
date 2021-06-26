@@ -11,8 +11,10 @@
   </main>
 </template>
 
-<script>
-import { useStore } from 'carts-store'
+<script lang="ts">
+import type { CartState } from 'carts-store'
+
+import { useStore } from 'koala-store'
 import Cart from './Cart.vue'
 
 export default {
@@ -21,7 +23,7 @@ export default {
     Cart
   },
   setup() {
-    const { getter, dispatch } = useStore()
+    const { getter, dispatch } = useStore<CartState>('Carts')
 
     const carts = getter((state) => state.carts)
 

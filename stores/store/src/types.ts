@@ -1,5 +1,5 @@
-import { AnyAction } from 'redux'
-import type { ComputedRef, Ref } from 'vue'
+import { AnyAction, Store } from 'redux'
+import type { ComputedRef } from 'vue'
 
 export interface Action {
   type: symbol | string
@@ -18,13 +18,6 @@ export interface ComputedGetter<T, S> {
   (state: T): S
 }
 
-export interface Store<T> {
-  getState(): T
-  subscribe: (listener: CallbackFn<T>) => () => CallbackFn<T>[]
-  dispatch(action: Action): Promise<void>
-  useState<S>(getter: ComputedGetter<T, S>): Ref<S>
-}
-
 export interface StoreOptions<T> {
   key: string
   state?: T
@@ -35,4 +28,5 @@ export interface KoalaStore<S> {
   dispatch(action: AnyAction): void
   watch<T>(fn: ComputedGetter<S, T>): void
   getter<T>(fn: ComputedGetter<S, T>): ComputedRef<T>
+  store: Store<S, AnyAction>
 }

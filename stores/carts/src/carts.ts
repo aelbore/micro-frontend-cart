@@ -1,14 +1,7 @@
 import { AnyAction, createStore, Reducer } from 'redux'
 import { CartState } from './types'
-import { koala } from 'koala-store'
 
-export type Action = AnyAction & { payload?: any }
-
-export interface ComputedGetter<S, T> {
-  (state: S): T
-}
-
-const removeCart = (state: CartState, action: Action) => {
+const removeCart = (state: CartState, action: AnyAction) => {
   const product = action.payload
 
   const carts = [ ...state.carts ]
@@ -26,7 +19,7 @@ const removeCart = (state: CartState, action: Action) => {
   return state
 }
 
-const addToCart = (state: CartState, action: Action) => {
+const addToCart = (state: CartState, action: AnyAction) => {
   const product = action.payload
 
   const carts = [ ...state.carts ]
@@ -41,7 +34,9 @@ const addToCart = (state: CartState, action: Action) => {
   return state
 }
 
-const reducer: Reducer<CartState> = (state: CartState, action: Action
+const reducer: Reducer<CartState> = (
+  state: CartState, 
+  action: AnyAction
 ) => {
   switch(action.type) {
     case 'addToCart': 
@@ -58,9 +53,5 @@ const store = createStore(reducer, {
     { id: 'p1', title: 'Gaming Mouse', price: 29.99, quantity: 1 }
   ]
 })
-
-export function useStore() {
-  return koala<CartState>(store)
-}
 
 export default store

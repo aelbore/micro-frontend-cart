@@ -1,6 +1,5 @@
-import { addToStore, createStore } from 'koala-store'
-import { reactive } from '@vue/reactivity'
-import { RouteRecordRaw } from 'vue-router'
+import { createStore, Action, Store, Reducer } from 'koala-store'
+import type { RouteRecordRaw } from 'vue-router'
 
 export interface Menu {
   text?: string
@@ -11,25 +10,27 @@ export interface BootstrapState {
   routes?: RouteRecordRaw[], 
   menus?: Menu[]
   completed?: boolean 
+  stores?: Array<Store<{}>>
 }
 
-const id = 'bootstrap'
+class BootstrapAction implements Action {
 
-const bootstrap = createStore<BootstrapState>({
-  id,
-  state: reactive({
-    routes: [],
-    menus: [],
-    completed: false
-  }),
-  actions: {
-    async bootstrap({ state, dispatch }) {
+  readonly type: string = 'onInit'
+
+} 
+
+const reducer: Reducer<BootstrapState> = (
+  state: BootstrapState, 
+  action: BootstrapAction
+) => {
+  const actions = {
+    async [action.type]() {
       const response = await fetch('/routes.json')
       const packages = await response.json()
-
+    
       await Promise.all(packages.stores.map(async moduleStore => {
-        const store = await import(/* @vite-ignore */  moduleStore.module).then(c => c.default())
-        addToStore(moduleStore.id, store)
+        const store = await import(/* @vite-ignore */  moduleStore.module).then(c => c.default)
+        state.stores.push(store)
       }))
 
       const routes: RouteRecordRaw[] = packages?.routes?.map(pkg => {
@@ -39,14 +40,22 @@ const bootstrap = createStore<BootstrapState>({
         }
         return route
       })
-      
+
       state.routes = routes
-      state.menus = packages.menus
       state.completed = !state.completed
-    },
+
+      return state
+    }
+  }
+  return actions[action.type] ? actions[action.type](): state
+}
+
+export default createStore<BootstrapState>({
+  key: 'bootstrap',
+  reducer,
+  state: {
+    routes: [],
+    completed: false,
+    stores: []
   }
 })
-
-addToStore(id, bootstrap(id))
-
-export default bootstrap

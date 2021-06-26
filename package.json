@@ -5,6 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "test": "qoi index.ts",
     "preinstall": "node ./tools/unlink.js",
     "postinstall": "node ./tools/links.js",
     "serve": "DEBUG=vite-tsconfig-paths vite",

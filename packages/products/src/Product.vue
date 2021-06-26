@@ -9,20 +9,19 @@
   </div>
 </template>
 
-<script>
-import { toRefs, defineComponent, } from 'vue'
-import useProduct from 'products-store'
+<script lang="ts">
+import { toRefs, defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'Product',
   props: {
     product: {
-      type: Object
+      type: Object,
+      require: true
     }
   },
-  setup(props) {
-    const store = useProduct()
-    const addToCart = () => store.dispatch('addToCart', props.product)
+  setup(props, { emit }) {
+    const addToCart = () => emit('addToCart')
 
     return { ...toRefs(props), addToCart }
   }

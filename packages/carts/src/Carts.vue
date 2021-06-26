@@ -1,6 +1,6 @@
 <template>
   <main class="carts">
-    <p v-if="carts.length <= 0">
+    <p v-if="carts && carts.length <= 0">
       No Item in the Cart!
     </p>
     <ul>
@@ -12,7 +12,8 @@
 </template>
 
 <script>
-import useCart from 'carts-store'
+import { useStore, RemoveCartAction } from 'carts-store'
+
 import Cart from './Cart.vue'
 
 export default {
@@ -21,7 +22,12 @@ export default {
     Cart
   },
   setup() {
-    const { carts, removeCart } = useCart()
+    const { useState, dispatch } = useStore()
+
+    const carts = useState((state) => {
+      return state.carts
+    })
+    const removeCart = (product) => dispatch(new RemoveCartAction(product))
 
     return { carts, removeCart }
   }

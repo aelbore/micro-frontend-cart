@@ -9,9 +9,9 @@
     "jsx": "preserve",
     "esModuleInterop": true,
     "paths": {
-      "products": [ "./stores/products/src/products.ts" ],
+      "products-store": [ "./stores/products/src/index.ts" ],
       "carts-store": [ "./stores/carts/src/carts.ts" ],
-      "koala-store": [ "./stores/store/src/store.ts" ],
+      "koala-store": [ "./stores/store/src/index.ts" ],
       "bootstrap": [ "./stores/bootstrap/src/bootstrap.ts" ]
     }
   }

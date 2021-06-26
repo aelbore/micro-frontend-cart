@@ -2,15 +2,17 @@
   <main class="products">
     <ul>
       <li v-for="(product, index) in products" :key="index">
-        <Product :product="product" />
+        <Product :product="product" @addToCart="addToCart(product)" />
       </li>
     </ul>
   </main>
 </template>
 
 <script lang="ts">
+import { AddToCart, Product as IProduct, ProductState } from 'products-store'
+
 import { defineComponent } from 'vue'
-import useProduct from 'products-store'
+import { useStore } from 'koala-store'
 
 import Product from './Product.vue'
 
@@ -20,9 +22,12 @@ export default defineComponent({
     Product
   },
   setup() {
-    const { products } = useProduct()
+    const { useState, dispatch } = useStore<ProductState>('Products')
 
-    return { products }
+    const products = useState((state) => state.products)
+    const addToCart = (product: IProduct) => dispatch(new AddToCart(product))
+
+    return { products, addToCart }
   }
 })
 </script>

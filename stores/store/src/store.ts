@@ -1,48 +1,55 @@
-import { reactive, computed, ToRefs, toRefs } from '@vue/reactivity'
+import { ref } from '@vue/reactivity'
+import { Action, CallbackFn, ComputedGetter, Reducer, Store, StoreOptions } from './types'
 
-export type Dispatch = { dispatch(type: string, payload?: any): void }
-export type ActionState<T> = { state?: T, dispatch?: (type: string, payload?: any) => void }
-export type ActionHandler<T> = (options: ActionState<T>, payload?: any) => void
-export type Actions<T> = { [key: string]: ActionHandler<T> }
+const State = new Map<string, {}>()
+const Stores = new Map<string, Store<{}>>()
 
-export interface StoreOptions<T> {
-  id?: string
-  state?: T
-  actions?: Actions<T>
+const generateId = () =>
+  Math.floor((1 + Math.random()) * 0x10000)
+    .toString(16)
+    .substring(1)
+
+export function createStore<T>(options: StoreOptions<T>) {
+  const { key, state, reducer } = options
+  return Stores.set(key, defineStore<T>(reducer, state)).get(key) as Store<T>
 }
 
-export type Store<T> = ToRefs<T> & Dispatch
-
-const stores = new Map<string, Store<{}>>()
-
-export function addToStore<T>(key: string, store: Store<T>) {
-  if (!stores.has(key)) {
-    stores.set(key, store)
-  }
+export function useStore<T>(key: string) {
+  return Stores.get(key) as Store<T>
 }
 
-export function createStore<T extends {}>(options: StoreOptions<T>) {
-  const getters = reactive<T>(
-    Object.keys(options.state).reduce((prev, cur) => {
-    prev[cur] = computed(() => options.state[cur])
-    return prev
-  }, {} as T)) as T
-
-  function dispatch(type: string, payload?: any) {
-    options.actions[type]({ state: options.state, dispatch }, payload)
-  }
-
-  const store: Store<T> = { ...toRefs(getters), dispatch }
+export function defineStore<T>(reducer: Reducer<T>, initialState: T) {
+  const key = generateId()
+  const listeners: Array<CallbackFn<T>> = []
   
-  const getSetStore = (id?: string) => {
-    const key = id ?? options.id 
-    if (key && stores.has(key)) return stores.get(key) as Store<T>
-    return store as Store<T>
-  }
-  
-  return getSetStore 
-}
+  State.set(key, initialState)
 
-export function useStore<T>(id: string) {
-  return stores.get(id) as Store<T>
+  const getState = () => State.get(key) as T
+
+  const dispatch = async (action?: Action) => {
+    const state = await reducer(getState(), action)
+    State.set(key, state)
+
+    listeners.slice().forEach((listener: CallbackFn<T>) => listener(getState()))
+  }
+
+  const subscribe = (listener: CallbackFn<T>) => {
+    listeners.push(listener)
+    return () => listeners.filter(l => l !== listener)
+  }
+
+  function useState<S>(getter: ComputedGetter<T, S>){
+    const result = ref<S>()
+
+    subscribe((state: T) => {
+      result.value = getter(state)
+    })
+    dispatch()
+
+    return result
+  }
+
+  const result: Store<T> = { getState, subscribe, dispatch, useState }
+
+  return result
 }

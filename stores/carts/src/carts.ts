@@ -1,6 +1,6 @@
 import { AnyAction, createStore, Reducer } from 'redux'
-
 import { CartState } from './types'
+import { koala } from 'koala-store'
 
 export type Action = AnyAction & { payload?: any }
 
@@ -26,24 +26,26 @@ const removeCart = (state: CartState, action: Action) => {
   return state
 }
 
-const reducer: Reducer<CartState> = (
-  state: CartState, 
-  action: Action
+const addToCart = (state: CartState, action: Action) => {
+  const product = action.payload
+
+  const carts = [ ...state.carts ]
+  const index = carts.findIndex(cart => cart.id === product.id)
+  if (index !== -1) {
+    carts[index].quantity++
+  } else {
+    carts.push({ ...product, quantity: 1 })
+  }
+  state.carts = [ ...carts  ]  
+
+  return state
+}
+
+const reducer: Reducer<CartState> = (state: CartState, action: Action
 ) => {
   switch(action.type) {
     case 'addToCart': 
-      const product = action.payload
-
-      const carts = [ ...state.carts ]
-      const index = carts.findIndex(cart => cart.id === product.id)
-      if (index !== -1) {
-        carts[index].quantity++
-      } else {
-        carts.push({ ...product, quantity: 1 })
-      }
-      state.carts = [ ...carts  ]  
-
-      return state
+      return addToCart(state, action)
     case 'removeCart': 
       return removeCart(state, action)
     default:
@@ -56,5 +58,9 @@ const store = createStore(reducer, {
     { id: 'p1', title: 'Gaming Mouse', price: 29.99, quantity: 1 }
   ]
 })
+
+export function useStore() {
+  return koala<CartState>(store)
+}
 
 export default store

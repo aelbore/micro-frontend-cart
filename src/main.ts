@@ -3,12 +3,14 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 
-import bootstrap, { BootstrapState } from 'bootstrap'
+import { useStore } from 'bootstrap'
 
 (async function () {
-  bootstrap.dispatch({ type: 'onInit' })
-  bootstrap.subscribe((state: BootstrapState) => {
-    (state?.completed && state.stores.length)
+  const { watch, dispatch } = useStore()
+
+  dispatch({ type: 'GET_CONFIG' })
+  watch(state => {
+    (state?.completed)
       && createApp(App)
             .use(router(state.routes))
             .mount('#app')

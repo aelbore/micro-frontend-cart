@@ -1,5 +1,5 @@
 import { AnyAction, createStore, Reducer } from 'redux'
-import cartStore from 'carts-store'
+import { useStore } from 'carts-store'
 
 export type Action = AnyAction & { payload?: any }
 
@@ -21,7 +21,7 @@ const reducer: Reducer<ProductState> = (
   state: ProductState, 
   action: Action
 ) => {
-  const { dispatch } = cartStore
+  const { dispatch } = useStore()
 
   switch (action.type) {
     case 'addToCart': 

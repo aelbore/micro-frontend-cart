@@ -14,24 +14,19 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue'
-import cart from 'carts-store'
+import { defineComponent } from 'vue'
+import { useStore } from 'carts-store'
 
 export default defineComponent({
   name: 'Navigation',
-  setup() {
-    const cartItemNumber = ref(0)
-    
-    cart.subscribe(() => {
-      const state = cart.getState()
-      cartItemNumber.value = state.carts.reduce((count, curItem) => {
-        return count + curItem.quantity
-      }, 0) 
-    })
+  setup() {    
+    const { getter } = useStore()
 
-    onMounted(() => {
-      cart.dispatch({ type: 'onInit' })
-    })
+    const cartItemNumber = getter((state) => {
+      return state.carts.reduce((count, curItem) => {
+        return count + curItem.quantity
+      }, 0)
+    }) 
 
     return { cartItemNumber }
   }

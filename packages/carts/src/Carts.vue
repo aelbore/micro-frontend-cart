@@ -12,9 +12,8 @@
 </template>
 
 <script>
-import cartStore from 'carts-store'
+import { useStore } from 'carts-store'
 import Cart from './Cart.vue'
-import { onMounted, ref } from 'vue'
 
 export default {
   name: 'Carts',
@@ -22,20 +21,12 @@ export default {
     Cart
   },
   setup() {
-    const { dispatch, subscribe, getState } = cartStore
-    const carts = ref()
+    const { getter, dispatch } = useStore()
 
-    subscribe(() => {
-      const state = getState()
-      carts.value = state.carts
-    })
+    const carts = getter((state) => state.carts)
 
     const removeCart = (product) => 
       dispatch({ type: 'removeCart', payload: product })
-
-    onMounted(() => {
-      dispatch({ type: 'onInit' })
-    })
 
     return { carts, removeCart }
   }

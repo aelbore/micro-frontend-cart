@@ -1,42 +1,38 @@
+import { AnyAction, createStore, Reducer } from 'redux'
 
-import { createStore, Action, useStore as store, Reducer } from 'koala-store'
-import { CartState, Cart } from './types'
+import { CartState } from './types'
 
-const CART_KEY = 'Carts'
+export type Action = AnyAction & { payload?: any }
 
-export class AddToCartAction implements Action {
-
-  readonly type: string = 'addToCart'
-  payload: Cart = {}
-
-  constructor(payload?: Cart) {
-    this.payload = { ...this.payload, ...payload }
-  } 
-
+export interface ComputedGetter<S, T> {
+  (state: S): T
 }
 
-export class RemoveCartAction implements Action {
+const removeCart = (state: CartState, action: Action) => {
+  const product = action.payload
 
-  readonly type: string = 'removeToCart'
-  payload: Cart = {}
+  const carts = [ ...state.carts ]
+  const index = carts.findIndex(cart => cart.id === product.id)
+  if (index !== -1) {
+    const item = carts[index]
+    if (item.quantity === 1) {
+      carts.splice(index, 1)
+    } else {
+      carts[index].quantity--
+    }
+  }
+  state.carts = [ ...carts ]    
 
-  constructor(payload?: Cart) {
-    this.payload = { ...this.payload, ...payload }
-  } 
-
+  return state
 }
-
 
 const reducer: Reducer<CartState> = (
   state: CartState, 
-  action?: Action
+  action: Action
 ) => {
-
-  if (!action) return state
-
-  const actions = {
-    addToCart() {
-      const product = (<AddToCartAction>action).payload
+  switch(action.type) {
+    case 'addToCart': 
+      const product = action.payload
 
       const carts = [ ...state.carts ]
       const index = carts.findIndex(cart => cart.id === product.id)
@@ -48,37 +44,17 @@ const reducer: Reducer<CartState> = (
       state.carts = [ ...carts  ]  
 
       return state
-    },
-    removeToCart() {
-      const product = (<AddToCartAction>action).payload
-
-      const carts = [ ...state.carts ]
-      const index = carts.findIndex(cart => cart.id === product.id)
-      if (index !== -1) {
-        const item = carts[index]
-        if (item.quantity === 1) {
-          carts.splice(index, 1)
-        } else {
-          carts[index].quantity--
-        }
-      }
-      state.carts = [ ...carts ]  
-    }
+    case 'removeCart': 
+      return removeCart(state, action)
+    default:
+      return state
   }
-
-  return actions[action?.type] ? actions[action?.type](): state
 }
 
-export function useStore() {
-  return store(CART_KEY)
-}
-
-export default createStore<CartState>({
-  key: CART_KEY,
-  state: {
-    carts: [
-      { id: 'p1', title: 'Gaming Mouse', price: 29.99, quantity: 1 }
-    ]
-  },
-  reducer
+const store = createStore(reducer, {
+  carts: [
+    { id: 'p1', title: 'Gaming Mouse', price: 29.99, quantity: 1 }
+  ]
 })
+
+export default store

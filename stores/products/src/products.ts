@@ -1,48 +1,47 @@
-import * as store from 'koala-store'
-import { Product, ProductState } from './types'
+import { AnyAction, createStore, Reducer } from 'redux'
+import cartStore from 'carts-store'
 
-const reducer: store.Reducer<ProductState> = (
+export type Action = AnyAction & { payload?: any }
+
+export interface Product {
+  id?: string
+  title?: string
+  price?: number
+}
+
+export interface ProductState {
+  products?: Product[]
+}
+
+export interface ComputedGetter<S, T> {
+  (state: S): T
+}
+
+const reducer: Reducer<ProductState> = (
   state: ProductState, 
-  action?: AddToCart
-)  => {
-  if (!action) return state
+  action: Action
+) => {
+  const { dispatch } = cartStore
 
-  const actions = {
-    [action?.type]() {
-      const { dispatch } = store.useStore('Carts')
+  switch (action.type) {
+    case 'addToCart': 
       dispatch({ type: 'addToCart', payload: action.payload })
-
       return state
-    }
+    case 'removeCart':
+      dispatch({ type: 'removeCart', payload: action.payload })
+      return state
+    default: 
+      return state
   }
-
-  return actions[action?.type] ? actions[action?.type](): state
 }
 
-export class AddToCart implements store.Action {
-
-  readonly type: string = 'addToCart'
-  payload: Product
-
-  constructor(payload: Partial<Product> = {}) {
-    this.payload = { ...payload, ...payload }
-  }
-
-}
-
-export function useStore() {
-  return store.useStore<ProductState>('Products')
-}
-
-export default store.createStore({
-  key: 'Products',
-  state: {
-    products: [
-      { id: 'p1', title: 'Gaming Mouse', price: 29.99 },
-      { id: 'p2', title: 'Harry Potter 3', price: 9.99 },
-      { id: 'p3', title: 'Used plastic bottle', price: 0.99 },
-      { id: 'p4', title: 'Half-dried plant', price: 2.99 }
-    ]
-  },
-  reducer
+const store = createStore(reducer, {
+  products: [
+    { id: 'p1', title: 'Gaming Mouse', price: 29.99 },
+    { id: 'p2', title: 'Harry Potter 3', price: 9.99 },
+    { id: 'p3', title: 'Used plastic bottle', price: 0.99 },
+    { id: 'p4', title: 'Half-dried plant', price: 2.99 }
+  ]
 })
+
+export default store

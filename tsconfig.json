@@ -10,7 +10,7 @@
     "esModuleInterop": true,
     "paths": {
       "products-store": [ "./stores/products/src/index.ts" ],
-      "carts-store": [ "./stores/carts/src/carts.ts" ],
+      "carts-store": [ "./stores/carts/src/index.ts" ],
       "koala-store": [ "./stores/store/src/index.ts" ],
       "bootstrap": [ "./stores/bootstrap/src/bootstrap.ts" ]
     }

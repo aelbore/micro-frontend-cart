@@ -9,10 +9,8 @@
 </template>
 
 <script lang="ts">
-import { AddToCart, Product as IProduct, ProductState } from 'products-store'
-
-import { defineComponent } from 'vue'
-import { useStore } from 'koala-store'
+import { defineComponent, ref, onMounted } from 'vue'
+import productStore from 'products-store'
 
 import Product from './Product.vue'
 
@@ -22,10 +20,20 @@ export default defineComponent({
     Product
   },
   setup() {
-    const { useState, dispatch } = useStore<ProductState>('Products')
+    const { subscribe, getState, dispatch } = productStore
+    const products = ref()
 
-    const products = useState((state) => state.products)
-    const addToCart = (product: IProduct) => dispatch(new AddToCart(product))
+    subscribe(() => {
+      const state = getState()
+      products.value = state.products
+    })
+
+    const addToCart = (product) => 
+      dispatch({ type: 'addToCart', payload: product })
+
+    onMounted(() => {
+      dispatch({ type: 'onInit' })
+    })
 
     return { products, addToCart }
   }

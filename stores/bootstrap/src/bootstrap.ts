@@ -29,7 +29,7 @@ const reducer: Reducer<BootstrapState> = (
       const packages = await response.json()
     
       await Promise.all(packages.stores.map(async moduleStore => {
-        const store = await import(/* @vite-ignore */  moduleStore.module).then(c => c.default)
+        const store = await import(/* @vite-ignore */  moduleStore.module)
         state.stores.push(store)
       }))
 

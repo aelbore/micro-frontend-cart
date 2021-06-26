@@ -10,6 +10,7 @@
     "postinstall": "node ./tools/links.js",
     "serve": "DEBUG=vite-tsconfig-paths vite",
     "serve:example": "sirv dist",
+    "build:all": "yarn build:stores && yarn build:packages && yarn build",
     "build": "qoi build --emptyOutDir --preset vue --external bootstrap,koala-store,@vue/runtime-core,@vue/shared,@vue/runtime-dom,@vue/reactivity,carts-store",
     "build:stores": "qoi ./tools/build.stores.ts",
     "build:packages": "concurrently \"yarn --cwd ./packages/products build\" \"yarn --cwd ./packages/carts build\"",
@@ -34,6 +35,7 @@
   "devDependencies": {
     "@qoi/build": "^0.0.7",
     "@qoi/cli": "^0.0.6",
+    "@reduxjs/toolkit": "^1.6.0",
     "@rollup/plugin-replace": "^2.4.2",
     "@types/node": "^15.12.4",
     "@vitejs/plugin-vue": "^1.2.3",
@@ -47,6 +49,7 @@
     "qoi-preset-vue": "^0.0.2",
     "react": "^17.0.2",
     "redux": "^4.1.0",
+    "redux-devtools-extension": "^2.13.9",
     "sass": "^1.35.1",
     "sirv-cli": "^1.0.12",
     "typescript": "^4.3.4",

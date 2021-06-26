@@ -14,18 +14,23 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
-import { useStore } from 'koala-store'
+import { defineComponent, onMounted, ref } from 'vue'
+import cart from 'carts-store'
 
 export default defineComponent({
   name: 'Navigation',
   setup() {
-    const { useState } = useStore('Carts')
+    const cartItemNumber = ref(0)
     
-    const cartItemNumber = useState((state: any) => {
-      return state.carts.reduce((count, curItem) => {
+    cart.subscribe(() => {
+      const state = cart.getState()
+      cartItemNumber.value = state.carts.reduce((count, curItem) => {
         return count + curItem.quantity
       }, 0) 
+    })
+
+    onMounted(() => {
+      cart.dispatch({ type: 'onInit' })
     })
 
     return { cartItemNumber }

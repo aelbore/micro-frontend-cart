@@ -16,7 +16,6 @@ Micro Frontend Pages `./packages`
 ## Stores
 Micro Frontend state management `./stores`
 * store
-* bootstrap 
 * types
 * products
 * carts
@@ -33,18 +32,18 @@ yarn install
 yarn build:all
 ```
 
-## Serve Micro Frontend Pages
+## Run and Start
 ```
-yarn serve:proxy
+yarn start
 ```
 
-## Serve Application Shell
-```
-yarn serve:static
-```
+## Browse 
+* Go to `http://localhost:5000`
+
 
 ## TODO
 * Children route with query parameters
 * React as Micro Frontend Page
+* Dynamically create import maps in index.html
 * Dev Mock API
 * Folder Structure

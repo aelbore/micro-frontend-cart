@@ -6,12 +6,14 @@
   "type": "module",
   "scripts": {
     "preinstall": "node ./tools/unlink.js",
-    "postinstall": "node ./tools/links.js",
+    "postinstall": "node ./tools/links.js && vite optimize",
+    "start": "concurrently \"yarn serve:proxy\" \"yarn serve:static\"",
     "serve": "vite",
     "serve:static": "qoi ./tools/server.ts",
     "serve:proxy": "concurrently \"yarn --cwd ./packages/products serve\" \"yarn --cwd ./packages/carts serve\" \"yarn --cwd ./stores/www serve\"",
-    "build:all": "yarn build:stores && yarn build:packages && yarn build",
-    "build": "qoi build --emptyOutDir --preset vue --external bootstrap,koala-store,@vue/runtime-core,@vue/shared,@vue/runtime-dom,@vue/reactivity,carts-store",
+    "build:all": "yarn build:stores:packages && yarn build",
+    "build": "qoi build --emptyOutDir --preset vue --external koala-store,@vue/runtime-core,@vue/shared,@vue/runtime-dom,@vue/reactivity",
+    "build:stores:packages": "concurrently \"yarn build:stores\" \"yarn --cwd build:packages\"",
     "build:stores": "qoi ./tools/build.stores.ts",
     "build:packages": "concurrently \"yarn --cwd ./packages/products build\" \"yarn --cwd ./packages/carts build\""
   },
@@ -31,6 +33,12 @@
     "url": "https://github.com/aelbore/micro-frontend-cart/issues"
   },
   "homepage": "https://github.com/aelbore/micro-frontend-cart#readme",
+  "dependencies": {
+    "es-module-shims": "^0.11.1",
+    "vue": "^3.1.1",
+    "vue-router": "^4.0.9",
+    "redux": "^4.1.0"
+  },
   "devDependencies": {
     "@qoi/build": "^0.0.7",
     "@qoi/cli": "^0.0.6",
@@ -43,18 +51,14 @@
     "@vue/compiler-sfc": "^3.1.2",
     "aria-fs": "^0.7.3",
     "concurrently": "^6.2.0",
-    "es-module-shims": "^0.11.1",
     "express": "^4.17.1",
     "http-proxy": "^1.18.1",
     "qoi-preset-vue": "^0.0.2",
     "react": "^17.0.2",
-    "redux": "^4.1.0",
     "redux-devtools-extension": "^2.13.9",
     "sass": "^1.35.1",
     "sirv-cli": "^1.0.12",
     "typescript": "^4.3.4",
-    "vite": "^2.3.8",
-    "vue": "^3.1.1",
-    "vue-router": "^4.0.9"
+    "vite": "^2.3.8"
   }
 }

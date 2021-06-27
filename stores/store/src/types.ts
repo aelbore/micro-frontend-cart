@@ -29,4 +29,5 @@ export interface KoalaStore<S> {
   watch<T>(fn: ComputedGetter<S, T>): void
   getter<T>(fn: ComputedGetter<S, T>): ComputedRef<T>
   store: Store<S, AnyAction>
+  subscribe(listener: () => void): void
 }

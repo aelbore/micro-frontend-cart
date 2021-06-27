@@ -2,6 +2,7 @@
 
 ## Technologies used:
 * Vue 
+* React
 * Redux
 * ImportMaps 
 * Typescript

@@ -36,12 +36,19 @@ yarn build:all
 ```
 yarn start
 ```
+* This will start 4 hosts
+  * App Shell - port `5000`
+  * Carts     - port `3010`
+  * Products  - port `3011`
+  * Stores    - port `3012`
+ 
 
 ## Browse 
 * Go to `http://localhost:5000`
 
 
 ## TODO
+* Use Docker and Nginx as web server
 * Children route with query parameters
 * React as Micro Frontend Page
 * Dynamically create import maps in index.html

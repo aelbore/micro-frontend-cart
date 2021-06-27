@@ -16,8 +16,7 @@ export default defineComponent({
   name: 'Product',
   props: {
     product: {
-      type: Object,
-      require: true
+      type: Object
     }
   },
   setup(props, { emit }) {

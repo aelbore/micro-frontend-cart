@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "serve": "sirv dist --port 5001",
+    "serve": "sirv dist --port 3011",
     "build": "qoi build --emptyOutDir --preset vue --external products-store,koala-store"
   },
   "keywords": [],

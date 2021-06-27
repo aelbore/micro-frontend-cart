@@ -5,16 +5,15 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "qoi index.ts",
     "preinstall": "node ./tools/unlink.js",
     "postinstall": "node ./tools/links.js",
-    "serve": "DEBUG=vite-tsconfig-paths vite",
-    "serve:example": "sirv dist",
+    "serve": "vite",
+    "serve:static": "qoi ./tools/server.ts",
+    "serve:proxy": "concurrently \"yarn --cwd ./packages/products serve\" \"yarn --cwd ./packages/carts serve\" \"yarn --cwd ./stores/www serve\"",
     "build:all": "yarn build:stores && yarn build:packages && yarn build",
     "build": "qoi build --emptyOutDir --preset vue --external bootstrap,koala-store,@vue/runtime-core,@vue/shared,@vue/runtime-dom,@vue/reactivity,carts-store",
     "build:stores": "qoi ./tools/build.stores.ts",
-    "build:packages": "concurrently \"yarn --cwd ./packages/products build\" \"yarn --cwd ./packages/carts build\"",
-    "proxy:serve": "concurrently \"yarn --cwd ./packages/products serve\" \"yarn --cwd ./packages/carts serve\""
+    "build:packages": "concurrently \"yarn --cwd ./packages/products build\" \"yarn --cwd ./packages/carts build\""
   },
   "repository": {
     "type": "git",
@@ -35,17 +34,18 @@
   "devDependencies": {
     "@qoi/build": "^0.0.7",
     "@qoi/cli": "^0.0.6",
-    "@reduxjs/toolkit": "^1.6.0",
     "@rollup/plugin-replace": "^2.4.2",
-    "@types/node": "^15.12.4",
-    "@vitejs/plugin-vue": "^1.2.3",
-    "@vue/compiler-sfc": "^3.1.1",
+    "@types/express": "^4.17.12",
+    "@types/http-proxy": "^1.17.6",
+    "@types/node": "^15.12.5",
+    "@types/picomatch": "^2.2.4",
+    "@vitejs/plugin-vue": "^1.2.4",
+    "@vue/compiler-sfc": "^3.1.2",
     "aria-fs": "^0.7.3",
     "concurrently": "^6.2.0",
     "es-module-shims": "^0.11.1",
-    "goober": "^2.0.38",
-    "lit": "^2.0.0-rc.2",
-    "pinia": "^2.0.0-beta.3",
+    "express": "^4.17.1",
+    "http-proxy": "^1.18.1",
     "qoi-preset-vue": "^0.0.2",
     "react": "^17.0.2",
     "redux": "^4.1.0",
@@ -53,12 +53,8 @@
     "sass": "^1.35.1",
     "sirv-cli": "^1.0.12",
     "typescript": "^4.3.4",
-    "vite": "^2.3.7",
-    "vite-tsconfig-paths": "^3.3.13",
+    "vite": "^2.3.8",
     "vue": "^3.1.1",
-    "vue-router": "^4.0.9",
-    "vuex": "^4.0.2",
-    "zustand": "^3.5.4",
-    "zx": "^1.14.2"
+    "vue-router": "^4.0.9"
   }
 }

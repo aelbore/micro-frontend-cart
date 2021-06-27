@@ -2,21 +2,21 @@
   "routes": [
     {
       "path": "/",
-      "component": "/products.js"
+      "component": "/products/products.js"
     },
     {
       "path": "/carts",
-      "component": "/carts.js"
+      "component": "/carts/carts.js"
     }
   ],
   "stores": [
     { 
       "id": "Products", 
-      "module": "/products-store.js" 
+      "module": "/www/products-store.js" 
     },
     { 
       "id": "Carts", 
-      "module": "/carts-store.js" 
+      "module": "/www/carts-store.js" 
     }
   ]
 }

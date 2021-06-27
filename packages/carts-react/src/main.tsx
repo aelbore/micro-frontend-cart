@@ -1,6 +1,7 @@
 import React from 'react'
 import { render, unmountComponentAtNode } from 'react-dom'
-import {  defineComponent, h, onBeforeUnmount, onMounted, onUpdated, ref } from 'vue'
+
+import { onBeforeUnmount, onMounted, onUpdated, onUnmounted, defineComponent, h, ref } from 'vue'
 
 import Carts from './Carts'
 
@@ -10,14 +11,17 @@ export default defineComponent({
 
     const renderApp = () => 
       render(React.createElement(Carts, context.attrs), el.value)       
+      
+    const unMountApp = () => 
+      el.value && unmountComponentAtNode(el.value)
 
     onMounted(() => renderApp())
 
     onUpdated(() => renderApp())
 
-    onBeforeUnmount(() => {
-      unmountComponentAtNode(el.value)
-    })
+    onUnmounted(() => unMountApp())
+
+    onBeforeUnmount(() => unMountApp())
     
     return () => h('div', { ref: el })
   }

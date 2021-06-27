@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import Cart from './Cart'
 
@@ -13,10 +13,14 @@ const Carts = (): JSX.Element => {
     dispatch({ type: 'removeCart', payload: cart })
   }
 
-  store.subscribe(() => {
+  const listener = store.subscribe(() => {
     const state = store.getState()
     setCarts(state.carts)
   })
+
+  useEffect(() => {
+    return () => listener()
+  }, [])
 
   return (
     <main style={{

@@ -16,12 +16,7 @@ export default {
 
         await clean(STORE_WWW)
 
-        /// create `./stores/www folder
-        /// static folder for stores
         await mkdir(STORE_WWW, { recursive: true })
-        
-        /// create package.json with scripts
-        /// to execute the static server
         await writeFile(
           `${STORE_WWW}/package.json`, 
           JSON.stringify({ 
@@ -31,8 +26,6 @@ export default {
            null, 2)
         )
 
-        /// Get all build files of stores
-        /// Copy all the files in ./stores folder
         const files = await globFiles([
           './stores/store/dist/*.js',
           './stores/carts/dist/*.js',

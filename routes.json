@@ -2,21 +2,21 @@
   "routes": [
     {
       "path": "/",
-      "component": "../../../packages/products/src/main"
+      "component": "../packages/products/src/main"
     },
     {
       "path": "/carts",
-      "component": "../../../packages/carts-react/src/main"
+      "component": "../packages/carts-react/src/main"
     }
   ],
   "stores": [
     { 
       "id": "Products", 
-      "module": "../../products/src/products" 
+      "module": "../stores/products/src/products" 
     },
     { 
       "id": "Carts", 
-      "module": "../../carts/src/carts" 
+      "module": "../stores/carts/src/carts" 
     }
   ]
 }

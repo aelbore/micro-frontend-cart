@@ -1,5 +1,5 @@
 import { AnyAction, createStore, Reducer } from 'redux'
-import { CartState } from './types'
+import { CartState } from 'types'
 
 const removeCart = (state: CartState, action: AnyAction) => {
   const product = action.payload

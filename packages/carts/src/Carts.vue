@@ -12,9 +12,9 @@
 </template>
 
 <script lang="ts">
-import type { CartState } from 'carts-store'
-
+import { CartState, Cart as ICart, STORES } from 'types'
 import { useStore } from 'koala-store'
+
 import Cart from './Cart.vue'
 
 export default {
@@ -23,11 +23,11 @@ export default {
     Cart
   },
   setup() {
-    const { getter, dispatch } = useStore<CartState>('Carts')
+    const { getter, dispatch } = useStore<CartState>(STORES.CARTS)
 
     const carts = getter((state) => state.carts)
 
-    const removeCart = (product) => 
+    const removeCart = (product: ICart) => 
       dispatch({ type: 'removeCart', payload: product })
 
     return { carts, removeCart }

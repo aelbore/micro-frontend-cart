@@ -30,11 +30,6 @@ const app = express()
 
 app.use(express.static(path.resolve(PUBLIC_FOLDER)))
 
-app.all('/', function(req: express.Request, res: express.Response, next: Function) {
-  console.log(req.url)
-  next()
-})
-
 app.all('/*', function(req: express.Request, res: express.Response, next: Function) {
   const keys = Object.keys(proxies) 
   const proxyUrl = keys.find(key => {

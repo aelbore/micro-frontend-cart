@@ -3,7 +3,7 @@ import type { RouteRecordRaw } from 'vue-router'
 import { addToStore, Action } from 'koala-store'
 import { createStore, Reducer, AnyAction, Store, applyMiddleware } from 'redux'
 
-import { BootstrapState, Stores } from './types'
+import { BootstrapState, Stores } from 'types'
 
 const reducer: Reducer<BootstrapState> = (
   state: BootstrapState, 

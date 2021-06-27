@@ -6,7 +6,7 @@ import { promisify } from 'util'
   const execAsync = promisify(exec)
   const stores = await promises.readdir('stores')
   
-  for (const pkg of stores) {
+  for (const pkg of stores.filter(store => !store.includes('www'))) {
     await execAsync(`yarn --cwd ./stores/${pkg} build`)
   }
 })()

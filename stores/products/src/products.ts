@@ -1,15 +1,13 @@
-import type { CartState } from 'carts-store'
-
 import { createStore, Reducer } from 'redux'
 import { useStore, Action } from 'koala-store'
 
-import { ProductState } from './types'
+import { ProductState, CartState, STORES } from 'types'
 
 const reducer: Reducer<ProductState> = (
   state: ProductState, 
   action: Action
 ) => {
-  const { dispatch } = useStore<CartState>('Carts')
+  const { dispatch } = useStore<CartState>(STORES.CARTS)
 
   switch (action.type) {
     case 'addToCart': 

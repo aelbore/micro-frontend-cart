@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
+    "baseUrl": "../../",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "target": "es2017",
@@ -9,10 +9,7 @@
     "jsx": "preserve",
     "esModuleInterop": true,
     "paths": {
-      "products-store": [ "./stores/products/src/index.ts" ],
-      "carts-store": [ "./stores/carts/src/index.ts" ],
       "koala-store": [ "./stores/store/src/index.ts" ],
-      "bootstrap": [ "./stores/bootstrap/src/bootstrap.ts" ],
       "types": [ "./stores/types/src/index.ts" ]
     }
   }

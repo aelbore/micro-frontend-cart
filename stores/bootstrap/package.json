@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "qoi build --dts --emptyOutDir --preset vue --external @vue/reactivity,koala-store,redux"
+    "build": "qoi build --emptyOutDir --preset vue --external @vue/reactivity,koala-store,redux"
   },
   "keywords": [],
   "author": "Arjay Elbore <aelbore.sg@gmail.com>",

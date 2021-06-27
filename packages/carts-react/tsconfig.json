@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "baseUrl": "../../",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "target": "es2017",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "jsx": "preserve",
+    "esModuleInterop": true,
+    "paths": {
+      "koala-store": [ "./stores/store/src/index.ts" ],
+      "types": [ "./stores/types/src/index.ts" ]
+    }
+  }
+}

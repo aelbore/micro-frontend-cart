@@ -28,7 +28,7 @@ export default {
         }))
 
         await writeFile(
-          './stores/www/package.json', 
+          `${STORE_WWW}/package.json`, 
           JSON.stringify({ 
             'name': 'shared',
             'scripts': { 'serve': 'sirv . --port 3012' } 

@@ -4,7 +4,9 @@ import App from './App.vue'
 import router from './router'
 
 import { koala } from 'koala-store'
-import bootstrap, { BootstrapState } from 'bootstrap'
+import { BootstrapState } from 'types'
+
+import bootstrap from 'bootstrap'
 
 (async function () {
   const { watch, dispatch } = koala<BootstrapState>(bootstrap)

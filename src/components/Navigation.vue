@@ -16,12 +16,12 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { useStore } from 'koala-store'
-import { CartState  } from 'carts-store'
+import { CartState, STORES } from 'types'
 
 export default defineComponent({
   name: 'Navigation',
   setup() {    
-    const { getter } = useStore<CartState>('Carts')
+    const { getter } = useStore<CartState>(STORES.CARTS)
 
     const cartItemNumber = getter((state) => {
       return state.carts.reduce((count, curItem) => {

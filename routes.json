@@ -6,7 +6,7 @@
     },
     {
       "path": "/carts",
-      "component": "../../../packages/carts/src/main"
+      "component": "../../../packages/carts-react/src/main"
     }
   ],
   "stores": [

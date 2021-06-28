@@ -28,7 +28,11 @@ export function koala<S>(store: Store<S, AnyAction>) {
     return computed(() => result.value)
   }
 
-  const result: KoalaStore<S> = { store, dispatch, getter, watch }
+  function subscribe(listiner: () => void) {
+    store.subscribe(listiner)
+  }
+
+  const result: KoalaStore<S> = { subscribe, store, dispatch, getter, watch }
 
   return result
 }

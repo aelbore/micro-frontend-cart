@@ -2,12 +2,9 @@ import { defineConfig } from 'vite'
 import { resolve } from 'path'
 
 import vuePlugin from '@vitejs/plugin-vue'
+import reactRefresh from '@vitejs/plugin-react-refresh'
 
 export default defineConfig({
-  esbuild: {
-    jsxFactory: 'h',
-    jsxFragment: 'Fragment'
-  },
   resolve: {
     alias: {
       "products-store": resolve('./stores/products/src'),
@@ -17,5 +14,5 @@ export default defineConfig({
       "types": resolve('./stores/types/src')
     }
   },
-  plugins: [ vuePlugin() ]
+  plugins: [ vuePlugin(), reactRefresh() ]
 })

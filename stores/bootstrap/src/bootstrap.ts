@@ -1,52 +1,76 @@
-import { addToStore, createStore } from 'koala-store'
-import { reactive } from '@vue/reactivity'
-import { RouteRecordRaw } from 'vue-router'
+import type { RouteRecordRaw } from 'vue-router'
 
-export interface Menu {
-  text?: string
-  link?: string
-}
+import { addToStore, Action } from 'koala-store'
+import { createStore, Reducer, AnyAction, Store, applyMiddleware } from 'redux'
 
-export interface BootstrapState {
-  routes?: RouteRecordRaw[], 
-  menus?: Menu[]
-  completed?: boolean 
-}
+import { BootstrapState, Stores } from 'types'
 
-const id = 'bootstrap'
+const reducer: Reducer<BootstrapState> = (
+  state: BootstrapState, 
+  action: Action
+) => {
+  switch(action.type) {
+    case 'bootstrap':
+      const model = action.payload as BootstrapState
 
-const bootstrap = createStore<BootstrapState>({
-  id,
-  state: reactive({
-    routes: [],
-    menus: [],
-    completed: false
-  }),
-  actions: {
-    async bootstrap({ state, dispatch }) {
-      const response = await fetch('/routes.json')
-      const packages = await response.json()
+      state.routes = model.routes
+      state.completed = model.completed
+      state.stores = model.stores
 
-      await Promise.all(packages.stores.map(async moduleStore => {
-        const store = await import(/* @vite-ignore */  moduleStore.module).then(c => c.default())
-        addToStore(moduleStore.id, store)
-      }))
-
-      const routes: RouteRecordRaw[] = packages?.routes?.map(pkg => {
-        const route: RouteRecordRaw = {
-          path: pkg.path,
-          component: () =>  import(/* @vite-ignore */ pkg.component)
-        }
-        return route
+      state.stores.forEach(({ key, store }) => {
+        addToStore(key, store)
       })
       
-      state.routes = routes
-      state.menus = packages.menus
-      state.completed = !state.completed
-    },
+      return state      
+    default:
+      return state
   }
-})
+}
 
-addToStore(id, bootstrap(id))
+const service = (store: Store<BootstrapState, AnyAction>) => 
+  (next: (action: Action) => void) => 
+  async (action: Action) => {
 
-export default bootstrap
+    next(action)
+
+    switch (action.type) {
+      case 'GET_CONFIG': 
+        const stores: Stores[] = []
+
+        const response = await fetch('/routes.json')
+        const packages = await response.json()
+
+        await Promise.all(packages.stores.map(async moduleStore => {
+          const store = await import(/* @vite-ignore */  moduleStore.module).then(c => c.default)
+          stores.push({ key: moduleStore.id, store })
+        }))
+
+        const routes: RouteRecordRaw[] = packages?.routes?.map(pkg => {
+          const route: RouteRecordRaw = {
+            path: pkg.path,
+            component: () =>  import(/* @vite-ignore */ pkg.component)
+          }
+          return route
+        })
+  
+        store.dispatch({ 
+          type: 'bootstrap', 
+          payload: { 
+            routes, 
+            stores,
+            completed: (
+              packages.stores?.length === stores.length
+            )
+          }
+        })
+    }
+}
+
+const initialState: BootstrapState = {
+  routes: [],
+  completed: false
+} 
+
+const store = createStore(reducer, initialState, applyMiddleware(service))
+
+export default store

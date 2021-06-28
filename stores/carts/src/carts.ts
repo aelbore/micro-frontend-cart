@@ -1,30 +1,10 @@
-import { reactive } from '@vue/reactivity'
-import { createStore } from 'koala-store'
-import { computed, readonly, ref, toRefs, getCurrentInstance } from 'vue'
+import { AnyAction, createStore, Reducer } from 'redux'
+import { CartState } from 'types'
 
-import { Cart, CartState } from './types'
+const removeCart = (state: CartState, action: AnyAction) => {
+  const product = action.payload
 
-const cartState = reactive<CartState>({
-  carts: [
-    { id: 'p1', title: 'Gaming Mouse', price: 29.99, quantity: 1 }
-  ]
-}) 
-
-const addToCart = (product: Cart) => {  
-  const carts = [ ...cartState.carts ]
-  const index = carts.findIndex(cart => cart.id === product.id)
-  if (index !== -1) {
-    carts[index].quantity++
-  } else {
-    carts.push({ ...product, quantity: 1 })
-  }
-  cartState.carts = [ ...carts  ]  
-  
-  publish('carts', cartState.carts)
-}
-
-const removeCart = (product: Cart) => {
-  const carts = [ ...cartState.carts ]
+  const carts = [ ...state.carts ]
   const index = carts.findIndex(cart => cart.id === product.id)
   if (index !== -1) {
     const item = carts[index]
@@ -34,28 +14,44 @@ const removeCart = (product: Cart) => {
       carts[index].quantity--
     }
   }
-  cartState.carts = [ ...carts ]  
+  state.carts = [ ...carts ]    
+
+  return state
 }
 
-const subscribe = (event: string, callback: (payload: any) => void ) => {
-  window.addEventListener(event, (payload: CustomEvent) => {
-    callback(payload.detail)
-  })
-  return window
+const addToCart = (state: CartState, action: AnyAction) => {
+  const product = action.payload
+
+  const carts = [ ...state.carts ]
+  const index = carts.findIndex(cart => cart.id === product.id)
+  if (index !== -1) {
+    carts[index].quantity++
+  } else {
+    carts.push({ ...product, quantity: 1 })
+  }
+  state.carts = [ ...carts  ]  
+
+  return state
 }
 
-const publish = (event: string, payload: any) => {
-  window.dispatchEvent(new CustomEvent(event, { detail: payload }))
-}
-
-function useCart() {
-  return {
-    ...toRefs(cartState),
-    addToCart,
-    removeCart,
-    subscribe
+const reducer: Reducer<CartState> = (
+  state: CartState, 
+  action: AnyAction
+) => {
+  switch(action.type) {
+    case 'addToCart': 
+      return addToCart(state, action)
+    case 'removeCart': 
+      return removeCart(state, action)
+    default:
+      return state
   }
 }
 
-export default useCart
+const store = createStore(reducer, {
+  carts: [
+    { id: 'p1', title: 'Gaming Mouse', price: 29.99, quantity: 1 }
+  ]
+})
 
+export default store

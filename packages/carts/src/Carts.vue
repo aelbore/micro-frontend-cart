@@ -1,6 +1,6 @@
 <template>
   <main class="carts">
-    <p v-if="carts.length <= 0">
+    <p v-if="carts && carts.length <= 0">
       No Item in the Cart!
     </p>
     <ul>
@@ -11,8 +11,10 @@
   </main>
 </template>
 
-<script>
-import useCart from 'carts-store'
+<script lang="ts">
+import { CartState, Cart as ICart, STORES } from 'types'
+import { useStore } from 'koala-store'
+
 import Cart from './Cart.vue'
 
 export default {
@@ -21,7 +23,12 @@ export default {
     Cart
   },
   setup() {
-    const { carts, removeCart } = useCart()
+    const { getter, dispatch } = useStore<CartState>(STORES.CARTS)
+
+    const carts = getter((state) => state.carts)
+
+    const removeCart = (product: ICart) => 
+      dispatch({ type: 'removeCart', payload: product })
 
     return { carts, removeCart }
   }

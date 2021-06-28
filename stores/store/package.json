@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "qoi build --dts --emptyOutDir --preset vue --external @vue/reactivity"
+    "build": "qoi build --dts --emptyOutDir --preset vue --external @vue/reactivity,vue,@vue/runtime-dom,redux"
   },
   "keywords": [],
   "author": "Arjay Elbore <aelbore.sg@gmail.com>",

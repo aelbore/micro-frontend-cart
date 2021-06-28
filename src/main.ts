@@ -1,43 +1,21 @@
-import { createApp, reactive, watchEffect } from 'vue'
-import { addToStore } from 'koala-store'
-import { RouteRecordRaw } from 'vue-router'
+import { createApp } from 'vue'
 
 import App from './App.vue'
 import router from './router'
 
-(async function() {  
-  const state = reactive({
-    routes: [],
-    menus: [],
-    completed: false
-  })
+import { koala } from 'koala-store'
+import { BootstrapState } from 'types'
 
-  const response = await fetch('/routes.json')
-  const packages = await response.json()
+import bootstrap from 'bootstrap'
 
-  await Promise.all(packages.stores.map(async moduleStore => {
-    const store = await import(/* @vite-ignore */  moduleStore.module).then(c => c.default())
-    addToStore(moduleStore.id, store)
-  }))
+(async function () {
+  const { watch, dispatch } = koala<BootstrapState>(bootstrap)
 
-  const routes: RouteRecordRaw[] = packages?.routes?.map(pkg => {
-    const route: RouteRecordRaw = {
-      path: pkg.path,
-      component: () =>  import(/* @vite-ignore */ pkg.component)
-    }
-    return route
-  })
-
-  state.routes = routes;
-  state.menus = packages.menus;
-  state.completed = !state.completed;
-
-  watchEffect(() => {
-    if (state.completed) {
-      createApp(App)
-        .use(router(state.routes)) 
-        .mount('#app')
-      state.completed = false
-    }
+  dispatch({ type: 'GET_CONFIG' })
+  watch(state => {
+    (state?.completed)
+      && createApp(App)
+            .use(router(state.routes))
+            .mount('#app')
   })
 })()

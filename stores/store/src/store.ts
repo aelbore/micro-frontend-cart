@@ -1,48 +1,43 @@
-import { reactive, computed, ToRefs, toRefs } from '@vue/reactivity'
+import { AnyAction, Store } from 'redux'
+import { computed, ref } from 'vue'
 
-export type Dispatch = { dispatch(type: string, payload?: any): void }
-export type ActionState<T> = { state?: T, dispatch?: (type: string, payload?: any) => void }
-export type ActionHandler<T> = (options: ActionState<T>, payload?: any) => void
-export type Actions<T> = { [key: string]: ActionHandler<T> }
+import { ComputedGetter, KoalaStore } from './types'
 
-export interface StoreOptions<T> {
-  id?: string
-  state?: T
-  actions?: Actions<T>
-}
+const stores = new Map<string, Store<{}, AnyAction>>()
 
-export type Store<T> = ToRefs<T> & Dispatch
-
-const stores = new Map<string, Store<{}>>()
-
-export function addToStore<T>(key: string, store: Store<T>) {
-  if (!stores.has(key)) {
-    stores.set(key, store)
-  }
-}
-
-export function createStore<T extends {}>(options: StoreOptions<T>) {
-  const getters = reactive<T>(
-    Object.keys(options.state).reduce((prev, cur) => {
-    prev[cur] = computed(() => options.state[cur])
-    return prev
-  }, {} as T)) as T
-
-  function dispatch(type: string, payload?: any) {
-    options.actions[type]({ state: options.state, dispatch }, payload)
-  }
-
-  const store: Store<T> = { ...toRefs(getters), dispatch }
+export function koala<S>(store: Store<S, AnyAction>) {
   
-  const getSetStore = (id?: string) => {
-    const key = id ?? options.id 
-    if (key && stores.has(key)) return stores.get(key) as Store<T>
-    return store as Store<T>
+  function dispatch(action: AnyAction) {
+    store.dispatch(action)
   }
+
+  function watch<T>(fn: ComputedGetter<S, T>) {
+    getter(fn)
+  }
+
+  function getter<T>(fn: ComputedGetter<S, T>) {
+    const result = ref<T>()
+
+    store.subscribe(() => {
+      const state = store.getState()
+      result.value = fn(state as S)
+    })
+
+    store.dispatch({ type: 'onInit' })
   
-  return getSetStore 
+    return computed(() => result.value)
+  }
+
+  const result: KoalaStore<S> = { store, dispatch, getter, watch }
+
+  return result
 }
 
-export function useStore<T>(id: string) {
-  return stores.get(id) as Store<T>
+export function useStore<S>(key: string) {
+  const store = stores.get(key) as Store<S, AnyAction>
+  return koala<S>(store)
 }
+
+export function addToStore<S>(key: string, store: Store<S, AnyAction>) {
+  return stores.set(key, store).get(key) as Store<S, AnyAction> 
+} 

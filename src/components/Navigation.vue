@@ -14,19 +14,20 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue'
-import useCarts from 'carts-store'
+import { defineComponent } from 'vue'
+import { useStore } from 'koala-store'
+import { CartState, STORES } from 'types'
 
 export default defineComponent({
   name: 'Navigation',
-  setup() {
-    const cart = useCarts()
-    
-    const cartItemNumber = computed(() => {
-      return cart.carts.value.reduce((count, curItem) => {
+  setup() {    
+    const { getter } = useStore<CartState>(STORES.CARTS)
+
+    const cartItemNumber = getter((state) => {
+      return state.carts.reduce((count, curItem) => {
         return count + curItem.quantity
-      }, 0) 
-    })
+      }, 0)
+    }) 
 
     return { cartItemNumber }
   }

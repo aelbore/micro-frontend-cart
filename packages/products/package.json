@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "serve": "sirv dist --port 5001",
-    "build": "qoi build --emptyOutDir --preset vue --external products-store"
+    "serve": "sirv dist --port 3011",
+    "build": "qoi build --emptyOutDir --preset vue --external koala-store"
   },
   "keywords": [],
   "author": "Arjay Elbore <aelbore.sg@gmail.com>",

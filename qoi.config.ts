@@ -1,17 +1,47 @@
 import { copy } from '@qoi/build'
-import { symlinkDir } from '@qoi/fs'
+import { symlinkDir, globFiles } from '@qoi/fs'
+
+import { copyFile, mkdir, writeFile } from 'fs/promises'
+import { basename, join } from 'path'
 
 export default {
   plugins: [
     copy({
       targets: [
-        { src: './packages/products/dist/*.js', dest: './dist' },
-        { src: './packages/carts/dist/*.js', dest: './dist' },
-        { src: './stores/carts/dist/*.js', dest: './dist' },
-        { src: './stores/products/dist/*.js', dest: './dist' },
-        { src: './stores/bootstrap/dist/*.js', dest: './dist' },
-        { src: './stores/store/dist/*.js', dest: './dist' }
-      ]
+        { src: './tools/*.html', dest: './dist' },
+        { src: './tools/*.json', dest: './dist' }
+      ],
+      async copyEnd() {
+        const STORE_WWW = './stores/www'
+
+        await mkdir(STORE_WWW, { recursive: true })
+        
+        const files = await globFiles([
+          './stores/bootstrap/dist/*.js',
+          './stores/store/dist/*.js',
+          './stores/carts/dist/*.js',
+          './stores/products/dist/*.js'
+        ], true)
+        await Promise.all(files.map(async file => {
+          const destPath = join(STORE_WWW, basename(file))
+          await copyFile(file, destPath)
+        }))
+
+        await writeFile(
+          `${STORE_WWW}/package.json`, 
+          JSON.stringify({ 
+            'name': 'shared',
+            'scripts': { 'serve': 'sirv . --port 3012' } 
+          },
+           null, 2)
+        )
+
+        await copyFile(
+          './node_modules/.vite/redux.js', 
+          './dist/redux.js'
+        )
+        await symlinkDir('./node_modules', join(STORE_WWW, 'node_modules'))
+      }
     }),
     {
       name: 'link',

@@ -1,10 +1,10 @@
 {
-  "name": "@bto-ui/carts-store",
+  "name": "koala-store",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "qoi build --emptyOutDir --preset vue --external @vue/reactivity,koala-store,redux"
+    "build": "qoi build --dts --emptyOutDir --preset vue"
   },
   "keywords": [],
   "author": "Arjay Elbore <aelbore.sg@gmail.com>",

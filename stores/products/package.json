@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "serve": "sirv dist --port 5001",
-    "build": "qoi build --dts --emptyOutDir --preset vue --external @vue/reactivity,koala-store,carts-store"
+    "build": "qoi build --emptyOutDir --preset vue --external @vue/reactivity,koala-store,redux"
   },
   "keywords": [],
   "author": "Arjay Elbore <aelbore.sg@gmail.com>",

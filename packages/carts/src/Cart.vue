@@ -16,7 +16,7 @@ export default {
   name: 'Cart',
   props: [ 'product' ],
   setup(props, { emit }) {
-    const removeFromCart = () => emit('remove', props.product) 
+    const removeFromCart = () => emit('remove') 
 
     return { ...toRefs(props), removeFromCart }
   }
